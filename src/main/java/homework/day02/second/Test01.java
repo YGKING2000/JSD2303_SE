@@ -14,7 +14,7 @@ import java.io.IOException;
  */
 public class Test01 {
     public static void main(String[] args) throws IOException {
-        File directory = new File(".");
+        File directory = new File("./txt");
         if (directory.isDirectory()) {
             File[] files = directory.listFiles(File::isFile);
             if (files != null && files.length > 0) {
@@ -22,7 +22,7 @@ public class Test01 {
                     String name = file.getName();
                     String[] data = name.split("[.]");
                     FileInputStream fis = new FileInputStream(file);
-                    FileOutputStream fos = new FileOutputStream(data[0] + "_cp." + data[1]);
+                    FileOutputStream fos = new FileOutputStream("./txt/" + data[0] + "_cp." + data[1]);
                     int d;
                     while ((d = fis.read()) != -1) {
                         fos.write(d);

@@ -1,12 +1,12 @@
-package homework.day02.first;
+package homework.day02.second;
 
 import java.io.*;
 
 /**
- * @Description 修改程序，使用缓冲流完成文件的复制
+ * @Description 修改程序，使得程序能使用缓冲流完成文件复制
  * @ClassName Test03
  * @Author YGKING e-mail:hrd18960706057@163.com
- * @Date 2023/04/07 20:35
+ * @Date 2023/04/08 20:39
  * @Version 1.0
  */
 public class Test03 {
@@ -24,6 +24,5 @@ public class Test03 {
         bos.flush();
         bos.close();
         System.out.println("复制完毕!");
-
     }
 }

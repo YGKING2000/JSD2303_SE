@@ -6,10 +6,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="JSD2303_SE" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="JSD2303_SE" target="8" />
       <module name="JSD2303_SE (1)" target="8" />
       <module name="JSD2303_SE (2)" target="8" />
     </bytecodeTargetLevel>
