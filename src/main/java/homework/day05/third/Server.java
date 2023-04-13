@@ -60,7 +60,7 @@ public class Server {
                 while (true) {
                     String message = br.readLine();
                     if (message == null || "exit".equalsIgnoreCase(message)) {
-                        System.out.println("客户端" + host + "已主动断开连接!");
+                        System.out.println("客户端" + host + "已主动断开连接!\n");
                         break;
                     }
                     System.out.println(host + ":" + message);

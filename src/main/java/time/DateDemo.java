@@ -1,4 +1,4 @@
-package time.date;
+package time;
 
 import java.util.Date;
 
@@ -28,5 +28,8 @@ public class DateDemo {
 
         System.out.println(time1.after(time2));// false
         System.out.println(time1.before(time2));// true
+
+        Date date = new Date(1000L * 60 * 60 * 24);
+        System.out.println(date);// Fri Jan 02 08:00:00 CST 1970
     }
 }
