@@ -16,33 +16,64 @@ public class Client {
 
     public Client() {
         try {
-            socket = new Socket("localhost", 8848);
+            socket = new Socket("176.114.14.150", 8088);
+            System.out.println("成功连接服务器!");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void start() {
-        OutputStream out = null;
         try {
-            out = socket.getOutputStream();
+            ServerHandler handler = new ServerHandler();
+            Thread thread = new Thread(handler);
+            thread.setDaemon(true);
+            thread.start();
+
+            OutputStream out = socket.getOutputStream();
             OutputStreamWriter osw = new OutputStreamWriter(out);
-            BufferedWriter bw = new BufferedWriter(osw);
-            PrintWriter pw = new PrintWriter(bw, true);
+            PrintWriter pw = new PrintWriter(osw, true);
+
+            // InputStream in = socket.getInputStream();
+            // InputStreamReader isr = new InputStreamReader(in);
+            // BufferedReader br = new BufferedReader(isr);
+
             Scanner scanner = new Scanner(System.in);
             while (true) {
+                System.out.println("请输入任意内容:");
                 String message = scanner.nextLine();
+                pw.println(message);
                 if ("exit".equalsIgnoreCase(message)) {
                     System.out.println("当前客户端已关闭！");
                     break;
                 }
-                pw.println(message);
+                // message = br.readLine();
+                // System.out.println(message);
             }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             try {
+                // 进行4次挥手操作
                 socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class ServerHandler implements Runnable {
+        @Override
+        public void run() {
+            try {
+                InputStream in = socket.getInputStream();
+                InputStreamReader isr = new InputStreamReader(in);
+                BufferedReader br = new BufferedReader(isr);
+                while (true) {
+                    String message = br.readLine();
+                    if (message == null) break;
+                    System.out.println(message);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

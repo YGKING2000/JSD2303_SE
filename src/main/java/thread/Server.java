@@ -1,11 +1,11 @@
 package thread;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Description
@@ -19,13 +19,15 @@ public class Server {
 
     public Server() {
         try {
-            serverSocket = new ServerSocket(8848);
+            serverSocket = new ServerSocket(8088);
+            System.out.println("服务器成功启动!");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void start() {
+        PrintWriter pw = null;
         try {
             while (true) {
                 Socket socket = serverSocket.accept();
@@ -46,40 +48,75 @@ public class Server {
         server.start();
     }
 
-    private class ClientHandler implements Runnable {
-        private Socket socket;
-        private String host;
+    private static class ClientHandler implements Runnable {
+        private final Socket socket;
+        private final String host;
 
-        public String getHost() {
-            return host;
-        }
+        private static final List<PrintWriter> allOut = new ArrayList<>();
 
         public ClientHandler(Socket socket) {
             this.socket = socket;
-            // Socket类实例方法
-            // InetAddress getInetAddress(): 返回套接字所连接的地址
-            // InetAddress类实例方法
-            // String getHostAddress(): 返回文本显示中的IP地址字符串
             this.host = socket.getInetAddress().getHostAddress();
         }
 
         @Override
         public void run() {
-            InputStream in = null;
+            PrintWriter pw = null;
             try {
-                in = socket.getInputStream();
+                System.out.println("客户端" + host + "连接成功!");
+
+                InputStream in = socket.getInputStream();
                 InputStreamReader isr = new InputStreamReader(in);
                 BufferedReader br = new BufferedReader(isr);
+
+                OutputStream out = socket.getOutputStream();
+                OutputStreamWriter osw = new OutputStreamWriter(out, StandardCharsets.UTF_8);
+                pw = new PrintWriter(osw, true);
+                synchronized (allOut) {
+                    allOut.add(pw);
+                }
+                sendMessage(host + "上线了，当前人数" + allOut.size());
+
                 while (true) {
+                    // 读取客户端发送过来的消息
                     String message = br.readLine();
+                    // 对客户端的消息进行校验
                     if (message == null || "exit".equalsIgnoreCase(message)) {
-                        System.out.println("当前服务器已关闭！");
+                        System.out.println("客户端" + host + "已主动断开连接！");
                         break;
                     }
-                    System.out.println(message);
+                    sendMessage(message);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                synchronized (allOut) {
+                    allOut.remove(pw);
+                }
+                sendMessage(host + "下线了，当前人数为" + allOut.size());
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        /*
+         * @Description 将消息发送给所有客户端
+         * @Return void
+         * @Params []
+         * @ParamsType []
+         * @Author YGKING
+         * @Date 2023/04/13 16:18:32
+         */
+        private void sendMessage(String message) {
+            System.out.println(host + "说:" + message);
+            // 将客户端发送过来的消息在回传给所有客户端
+            synchronized(allOut) {
+                for (PrintWriter printWriter : allOut) {
+                    printWriter.println(host + "说:" + message);
+                }
             }
         }
     }
