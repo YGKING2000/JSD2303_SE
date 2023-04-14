@@ -24,9 +24,9 @@ public class Client {
 
     public void start() {
         try {
-            Thread thread = new Thread(new ServerHandler());
-            thread.setDaemon(true);
-            thread.start();
+            // Thread thread = new Thread(new ServerHandler());
+            // thread.setDaemon(true);
+            // thread.start();
 
             OutputStream out = socket.getOutputStream();
             PrintWriter pw = new PrintWriter(out, true);

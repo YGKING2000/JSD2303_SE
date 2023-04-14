@@ -40,7 +40,6 @@ public class Server {
     private static class ClientHandler implements Runnable {
         private final Socket socket;
         private final String host;
-
         private static final List<PrintWriter> allOut = new ArrayList<>();
 
         public ClientHandler(Socket socket) {
@@ -72,6 +71,7 @@ public class Server {
             } catch (IOException e) {
                 System.out.println(e.getMessage());
             } finally {
+                //
                 synchronized (allOut) {
                     allOut.remove(pw);
                 }
@@ -103,5 +103,7 @@ public class Server {
     public static void main(String[] args) {
         Server server = new Server();
         server.start();
+
+        Class<Server> Demo = Server.class;
     }
 }
